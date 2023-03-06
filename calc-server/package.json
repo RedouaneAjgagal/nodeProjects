@@ -1,0 +1,16 @@
+{
+  "name": "calc-server",
+  "version": "1.0.0",
+  "description": "A very simple calc app for practice node",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "RedouaneAjgagal",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  }
+}
