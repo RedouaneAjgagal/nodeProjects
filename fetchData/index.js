@@ -1,9 +1,8 @@
 const express = require('express');
 const app = express();
 const https = require('https');
-const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/index.html`)
@@ -11,15 +10,21 @@ app.get('/', (req, res) => {
 
 
 app.post('/country', (req, res) => {
-    const countryValue = req.body.country
-    const country = `https://restcountries.com/v3.1/name/${countryValue}`
-    https.get(country, (response) => {
+    const country = req.body.country
+    const url = `https://restcountries.com/v3.1/name/${country}`
+    https.get(url, (response) => {
         response.on('data', (data) => {
             const [getData] = JSON.parse(data)
             const name = getData.name.common;
             const capital = getData.capital[0];
-            const population = getData.population;
-            res.send(`Country Name: ${name}, capital ${capital} and population ${population}`)
+            const getpopulation = getData.population;
+            const population = new Intl.NumberFormat().format(getpopulation)
+            const flag = getData.flags.svg
+            res.write(`<h1>Country: ${name}</h1>`)
+            res.write(`<p>Capital: ${capital}</p>`)
+            res.write(`<p>population: ${population}</p>`)
+            res.write(`<img src="${flag}">`)
+            res.send()
         });
     })
 })
