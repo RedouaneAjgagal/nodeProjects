@@ -1,0 +1,17 @@
+<%- include('header') -%>
+
+
+    <ul>
+        <% for (let i = 0; i < todos.length; i++) { %>
+            <li><%= todos[i] %></li>
+        <% } %>
+    </ul>
+    <form action="/" method="post">
+        <label for="todo">Add a new todo</label>
+        <input type="text" id="todo" name="todo">
+        <button type="submit">Add</button>
+    </form>
+
+
+
+<%- include('footer') -%>
