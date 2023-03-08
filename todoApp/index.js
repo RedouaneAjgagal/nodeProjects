@@ -7,7 +7,7 @@ app.use(express.static('public'))
 app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-    res.render('index', {todos})
+    res.render('index', { todos })
 })
 
 app.post('/', (req, res) => {
@@ -26,6 +26,14 @@ app.post('/delete', (req, res) => {
     const id = req.body.delete
     const updatedTodos = todos.filter(todo => todo.id !== id)
     todos = updatedTodos;
+    res.redirect('/')
+})
+
+app.post('/edit', (req, res) => {
+    const id = req.body.update
+    const value = req.body[id]
+    const targetTodo = todos.findIndex(todo => todo.id === id)
+    todos[targetTodo].value = value
     res.redirect('/')
 })
 

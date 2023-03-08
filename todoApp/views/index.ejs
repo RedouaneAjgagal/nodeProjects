@@ -10,6 +10,10 @@
                     <form action="/delete" method="post">
                         <button type="submit" name="delete" value=<%= todos[i].id%>>delete</button>
                     </form>
+                    <form action="/edit" method="post">
+                        <input type="text" name="<%= todos[i].id%>">
+                        <button type="submit" name="update" value=<%= todos[i].id%>>update</button>
+                    </form>
                 </label>
             </li>
         <% } %>
