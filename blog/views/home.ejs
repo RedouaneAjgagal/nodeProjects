@@ -6,7 +6,7 @@
     <div>
         <h2><%= posts[i].title %></h2>
     <p><%= posts[i].content %></p>
-    <a href="/posts/<%= posts[i].title %>">Read More</a>
+    <a href="/posts/<%= _.kebabCase(posts[i].title) %>">Read More</a>
     </div>
     
     <% }  %>

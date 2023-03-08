@@ -11,10 +11,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-let posts = [{ title: 'Welcome Ota', content: 'Some demo text' }]
+let posts = []
 
 app.get('/', (res, req) => {
-  req.render('home', { content: homeStartingContent, posts });
+  const updatedPosts = posts.map(post => {
+    const arrayContent = post.content.split(' ')
+    const shortContent = `${arrayContent.slice(0, 8).join(' ')}...`
+    return {...post, content: shortContent}
+  })
+  req.render('home', { content: homeStartingContent, posts: updatedPosts, _:_ });
 })
 app.get('/about', (res, req) => {
   req.render('about', { content: aboutContent })
@@ -35,11 +40,11 @@ app.get('/posts/:postId', (req, res) => {
       return true
     }
   })
-  
+
   if (findPost) {
     res.render('post', { title: findPost.title, content: findPost.content })
   } else {
-    res.render('post', {title: 'Error', content: 'Nothing Has found'})
+    res.render('post', { title: 'Error', content: 'Nothing Has found' })
   }
 })
 
