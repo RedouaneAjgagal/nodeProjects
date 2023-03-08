@@ -1,8 +1,7 @@
 const express = require('express');
 const app = express();
-
-const todos = []
-
+const generate = require(`${__dirname}/generateId.js`)
+let todos = []
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.set('view engine', 'ejs')
@@ -13,7 +12,20 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
     const todo = req.body.todo
-    todos.push(todo);
+    const id = generate.generateId()
+    const todoState = {
+        id: id,
+        value: todo,
+        checked: false,
+    }
+    todos.push(todoState);
+    res.redirect('/')
+})
+
+app.post('/delete', (req, res) => {
+    const id = req.body.delete
+    const updatedTodos = todos.filter(todo => todo.id !== id)
+    todos = updatedTodos;
     res.redirect('/')
 })
 

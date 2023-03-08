@@ -3,7 +3,15 @@
 
     <ul>
         <% for (let i = 0; i < todos.length; i++) { %>
-            <li><%= todos[i] %></li>
+            <li>
+                <label for=<%= todos[i].id%>>
+                    <input type="checkbox" id=<%= todos[i].id%>>
+                    <%= todos[i].value %>
+                    <form action="/delete" method="post">
+                        <button type="submit" name="delete" value=<%= todos[i].id%>>delete</button>
+                    </form>
+                </label>
+            </li>
         <% } %>
     </ul>
     <form action="/" method="post">
