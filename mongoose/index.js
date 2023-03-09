@@ -28,8 +28,14 @@ const kiwi = new Fruit({
     rating: 9,
     review: 'Trying to be the best'
 });
-Fruit.insertMany([banana, kiwi]);
+// Fruit.insertMany([banana, kiwi]);
 // appel.save();
+
+const trys = async () => {
+    const data = await Fruit.find();
+    console.log(data);
+}
+trys()
 
 
 const personSchema = new mongoose.Schema({
