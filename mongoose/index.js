@@ -4,28 +4,19 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/fruitsDB');
 
 
-const personSchema = new mongoose.Schema({
-    name: String,
-    age: Number
-});
-const Person = mongoose.model("Person", personSchema)
-const jhon = new Person({
-    name: 'Jhon',
-    age: 36
-});
-// jhon.save()
 
-const deleteMany = async (name) => {
-    await Person.deleteMany({name: name});
-    console.log(`Successfully deleted ${name}`);
-}
-deleteMany('Jhon')
-.then(() => {
-    console.log('Delete operation completed successfully');
-})
-.catch((err) => {
-    console.error(`Error deleting ${err}`)
-})
+
+// const deleteMany = async (name) => {
+//     await Person.deleteMany({name: name});
+//     console.log(`Successfully deleted ${name}`);
+// }
+// deleteMany('Jhon')
+// .then(() => {
+//     console.log('Delete operation completed successfully');
+// })
+// .catch((err) => {
+//     console.error(`Error deleting ${err}`)
+// })
 
 const fruitSchema = new mongoose.Schema({
     name: {
@@ -73,7 +64,7 @@ const updateLemon = async () => {
         await Fruit.updateOne({ _id: '640a85597f255846aabff6f4' }, { name: 'Lemon' })
         // console.log('Updated Succesfully');
     } catch (err) {
-        console.log('Cound not update');
+        console.error(err);
     }
 }
 
@@ -101,7 +92,7 @@ const getFruits = async () => {
     } catch (err) {
         console.log(err);
     }
-    mongoose.connection.close();
+    // mongoose.connection.close();
 }
 // const getFruitsNames = getFruits()
 // console.log(getFruits());
@@ -138,3 +129,27 @@ const country3 = new Country({
 // country3.save();
 // country2.save()
 // country.save();
+
+const pineapple = new Fruit({
+    name: 'Pineapple',
+    rating: 8.5,
+    review: 'Im Rareeeee!!!'
+});
+
+const personSchema = new mongoose.Schema({
+    name: String,
+    age: Number,
+    favouriteFruits: fruitSchema
+});
+const Person = mongoose.model("Person", personSchema)
+const emmy = new Person({
+    name: 'Emmy',
+    age: 12,
+    favouriteFruits: pineapple
+});
+// emmy.save()
+
+const updateJhon = async () => {
+    await Person.updateOne({ name: "Jhon" }, { favouriteFruits: pineapple })
+}
+updateJhon();
