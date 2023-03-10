@@ -72,17 +72,33 @@ app.post('/delete', (req, res) => {
 app.post('/edit', (req, res) => {
     const id = req.body.update
     const value = req.body[id]
+    if (value.trim().length === 0) {
+        return res.redirect('/')
+    }
     const updateTodo = async (id, value) => {
         try {
             await Todo.updateOne({ _id: id }, { value })
             console.log(`todo #${id}, has been successfully updated!`);
-        } catch {
-            console.log('Could not update this todo');
+        } catch (err) {
+            console.log(err);
         }
     }
     updateTodo(id, value);
     res.redirect('/')
 })
+
+app.post('/complete', (req, res) => {
+    const checkboxId = req.body.checkbox;
+    const checkTodo = async () => {
+        let isCompleted = false
+        const findTodo = await Todo.findById(checkboxId)
+        if (!findTodo.completed) isCompleted = true;
+        await Todo.updateOne({ _id: checkboxId }, { completed: isCompleted });
+    }
+    checkTodo()
+    res.redirect('/')
+})
+
 
 app.listen(3000, () => {
     console.log('Server is running on 3000');

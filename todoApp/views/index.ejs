@@ -3,10 +3,16 @@
 
     <ul>
         <% for (let i = 0; i < todos.length; i++) { %>
+            <% let style = todos[i].completed ? "text-decoration:line-through" : "text-decoration:none" %>
+            
             <li>
                 <label for=<%= todos[i].id%>>
-                    <input type="checkbox" id=<%= todos[i].id%>>
-                    <%= todos[i].value %>
+                    <form action="/complete" method="post">
+                        <input onchange="this.form.submit()"  type="checkbox" name='checkbox' value=<%= todos[i].id%>  id=<%= todos[i].id%> >
+                    </form>
+                    <span style=<%= style %>>
+                        <%= todos[i].value %>
+                    </span>
                     <form action="/delete" method="post">
                         <button type="submit" name="delete" value=<%= todos[i].id%>>delete</button>
                     </form>
