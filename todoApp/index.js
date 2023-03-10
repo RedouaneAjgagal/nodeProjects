@@ -72,8 +72,15 @@ app.post('/delete', (req, res) => {
 app.post('/edit', (req, res) => {
     const id = req.body.update
     const value = req.body[id]
-    const targetTodo = todos.findIndex(todo => todo.id === id)
-    todos[targetTodo].value = value
+    const updateTodo = async (id, value) => {
+        try {
+            await Todo.updateOne({ _id: id }, { value })
+            console.log(`todo #${id}, has been successfully updated!`);
+        } catch {
+            console.log('Could not update this todo');
+        }
+    }
+    updateTodo(id, value);
     res.redirect('/')
 })
 
