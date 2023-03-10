@@ -40,20 +40,32 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
     const todo = req.body.todo
-    const id = generate.generateId()
-    const todoState = {
-        id: id,
-        value: todo,
-        checked: false,
+    const addNewTodo = async () => {
+        const newTodo = new Todo({
+            value: todo,
+            completed: false
+        });
+        try {
+            await newTodo.save();
+        } catch (err) {
+            console.log(err.errors.value.message);
+        }
     }
-    todos.push(todoState);
+    addNewTodo()
     res.redirect('/')
 })
 
 app.post('/delete', (req, res) => {
     const id = req.body.delete
-    const updatedTodos = todos.filter(todo => todo.id !== id)
-    todos = updatedTodos;
+    const deleteTodo = async (id) => {
+        try {
+            await Todo.deleteOne({ _id: id })
+            console.log(`todo #${id}, has been successfully deleted!`);
+        } catch {
+            console.log('Failed to delete');
+        }
+    }
+    deleteTodo(id);
     res.redirect('/')
 })
 
