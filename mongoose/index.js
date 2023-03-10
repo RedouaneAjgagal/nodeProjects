@@ -6,7 +6,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/fruitsDB');
 const fruitSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: [true, 'Name field is required']
     },
     rating: {
         type: Number,
@@ -40,18 +40,36 @@ const orange = new Fruit({
     rating: 5,
     review: 'Im confused about myself'
 });
-orange.save();
+const lemon = new Fruit({
+    rating: 7,
+    review: 'If im a juice i become 11'
+});
+const updateLemon = async () => {
+    try {
+        await Fruit.updateOne({ _id: '640a85597f255846aabff6f4' }, { name: 'Lemon' })
+        console.log('Updated Succesfully');
+    } catch (err) {
+        console.log('Cound not update');
+    }
+}
+
+updateLemon()
+// orange.save();
 // Fruit.insertMany([banana, kiwi]);
 // appel.save();
 
 
 const getFruits = async () => {
-    const fruits = await Fruit.find({});
-    const names = fruits.map(fruit => {
-        return fruit.name
-    });
+    try {
+        const fruits = await Fruit.find({});
+        const names = fruits.map(fruit => {
+            return fruit.name
+        });
+        console.log(names.toString());
+    } catch (err) {
+        console.log(err);
+    }
     mongoose.connection.close();
-    console.log(names.toString());
 }
 // const getFruitsNames = getFruits()
 // console.log(getFruits());
@@ -81,17 +99,17 @@ const Country = mongoose.model('Country', countrySchema);
 const country = new Country({
     name: 'Morocco',
     capital: 'Rabat',
-    population: 36910558 
+    population: 36910558
 });
 const country2 = new Country({
     name: 'Morocco',
     capital: 'Rabat',
-    population: '36910558' 
+    population: '36910558'
 });
 const country3 = new Country({
     name: 'Canada',
     capital: 'Ottawa',
-    population: 38005238 
+    population: 38005238
 });
 
 
