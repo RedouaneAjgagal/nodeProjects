@@ -40,6 +40,7 @@ const orange = new Fruit({
     rating: 5,
     review: 'Im confused about myself'
 });
+// orange.save()
 const lemon = new Fruit({
     rating: 7,
     review: 'If im a juice i become 11'
@@ -47,11 +48,19 @@ const lemon = new Fruit({
 const updateLemon = async () => {
     try {
         await Fruit.updateOne({ _id: '640a85597f255846aabff6f4' }, { name: 'Lemon' })
-        console.log('Updated Succesfully');
+        // console.log('Updated Succesfully');
     } catch (err) {
         console.log('Cound not update');
     }
 }
+
+const deleteItem = async (id) => {
+    await Fruit.deleteOne({ _id: id });
+    console.log(`${id} has been deleted in fruits `);
+}
+deleteItem("640a8e8777eb97edef9dd3e7")
+    .then(() => console.log('Delete operation completed successfully'))
+    .catch((err) => console.error(`Error deleting ${err}`))
 
 updateLemon()
 // orange.save();
