@@ -253,10 +253,27 @@ const userShema = new mongoose.Schema({
         },
         required: [true, 'Email is Required']
     },
+    products: [productsSchema]
 });
 const User = mongoose.model('User', userShema);
 const jhon = new User({
     name: 'Jhon',
     email: 'jhon@gmail.com'
 });
-jhon.save();
+// jhon.save();
+
+const displayProducts = async () => {
+    const respose = await Product.find();
+    return respose
+}
+const addNewUser = async (id, name, email) => {
+    const getProducts = await displayProducts()
+    const targetedProducts = getProducts.filter(product => product.id === id)
+    const user = new User({
+        name: name,
+        email: email,
+        products: targetedProducts
+    });
+    user.save();
+}
+addNewUser('640b62a0f5c86e53b7c9f020', 'Max', 'max@gmail.com');
