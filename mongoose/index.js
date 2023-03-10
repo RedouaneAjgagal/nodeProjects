@@ -4,8 +4,15 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/fruitsDB');
 
 const fruitSchema = new mongoose.Schema({
-    name: String,
-    rating: Number,
+    name: {
+        type: String,
+        required: true
+    },
+    rating: {
+        type: Number,
+        min: 1,
+        max: 10
+    },
     review: String
 });
 
@@ -28,14 +35,27 @@ const kiwi = new Fruit({
     rating: 9,
     review: 'Trying to be the best'
 });
+const orange = new Fruit({
+    name: 'Orange',
+    rating: 5,
+    review: 'Im confused about myself'
+});
+orange.save();
 // Fruit.insertMany([banana, kiwi]);
 // appel.save();
 
-const trys = async () => {
-    const data = await Fruit.find();
-    console.log(data);
+
+const getFruits = async () => {
+    const fruits = await Fruit.find({});
+    const names = fruits.map(fruit => {
+        return fruit.name
+    });
+    mongoose.connection.close();
+    console.log(names.toString());
 }
-trys()
+// const getFruitsNames = getFruits()
+// console.log(getFruits());
+getFruits()
 
 
 const personSchema = new mongoose.Schema({
