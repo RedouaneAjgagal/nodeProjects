@@ -3,6 +3,30 @@ const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://127.0.0.1:27017/fruitsDB');
 
+
+const personSchema = new mongoose.Schema({
+    name: String,
+    age: Number
+});
+const Person = mongoose.model("Person", personSchema)
+const jhon = new Person({
+    name: 'Jhon',
+    age: 36
+});
+// jhon.save()
+
+const deleteMany = async (name) => {
+    await Person.deleteMany({name: name});
+    console.log(`Successfully deleted ${name}`);
+}
+deleteMany('Jhon')
+.then(() => {
+    console.log('Delete operation completed successfully');
+})
+.catch((err) => {
+    console.error(`Error deleting ${err}`)
+})
+
 const fruitSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -23,13 +47,12 @@ const appel = new Fruit({
     review: 'Umm Im Ok'
 });
 
-
 const banana = new Fruit({
     name: 'Banana',
     rating: 10,
     review: 'Im the best Hehe'
 });
-
+// banana.save()
 const kiwi = new Fruit({
     name: 'Kiwi',
     rating: 9,
@@ -54,13 +77,13 @@ const updateLemon = async () => {
     }
 }
 
-const deleteItem = async (id) => {
-    await Fruit.deleteOne({ _id: id });
-    console.log(`${id} has been deleted in fruits `);
-}
-deleteItem("640a8e8777eb97edef9dd3e7")
-    .then(() => console.log('Delete operation completed successfully'))
-    .catch((err) => console.error(`Error deleting ${err}`))
+// const deleteItem = async (id) => {
+//     await Fruit.deleteOne({ _id: id });
+//     console.log(`${id} has been deleted in fruits `);
+// }
+// deleteItem("640a8e8777eb97edef9dd3e7")
+//     .then(() => console.log('Delete operation completed successfully'))
+//     .catch((err) => console.error(`Error deleting ${err}`))
 
 updateLemon()
 // orange.save();
@@ -85,18 +108,8 @@ const getFruits = async () => {
 getFruits()
 
 
-const personSchema = new mongoose.Schema({
-    name: String,
-    age: Number
-});
 
-const Person = mongoose.model("Person", personSchema);
-const person = new Person({
-    name: 'Jhon',
-    age: 36
-});
-
-// person.save();
+// person.save()
 
 const countrySchema = new mongoose.Schema({
     name: String,
