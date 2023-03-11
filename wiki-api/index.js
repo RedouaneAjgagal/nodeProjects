@@ -4,6 +4,7 @@ const app = express()
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
 
 mongoose.connect('mongodb://127.0.0.1:27017/wikiDB');
 
@@ -13,6 +14,27 @@ const articlesSchema = new mongoose.Schema({
 });
 const Article = mongoose.model('Article', articlesSchema);
 
+app.get('/articles', (req, res) => {
+    const getArticles = async () => {
+        const articles = await Article.find();
+        res.send(articles)
+    }
+    getArticles()
+});
+
+app.post('/articles', (req, res) => {
+    const title = req.body.title;
+    const content = req.body.content;
+    const newArticle = async () => {
+        try {
+            await Article.create({title, content})
+            res.send(`Successfully Added #${title}`)
+        } catch (err) {
+            res.send(`Fail to add a new article.. ${err}`)
+        }
+    }
+    newArticle();
+})
 
 app.listen(3000, () => {
     console.log(`Server is running on port: 3000`);
