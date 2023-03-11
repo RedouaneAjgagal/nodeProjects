@@ -5,21 +5,39 @@ const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pelle
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
 const app = express();
-const _ = require('lodash')
+const _ = require('lodash');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/blogPostDB');
 
 app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-let posts = []
+
+const postsSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Cannot be empty!']
+  },
+  content: {
+    type: String,
+    required: [true, 'Cannot be empty!']
+  }
+});
+const Post = mongoose.model('Post', postsSchema);
 
 app.get('/', (res, req) => {
-  const updatedPosts = posts.map(post => {
-    const arrayContent = post.content.split(' ')
-    const shortContent = `${arrayContent.slice(0, 8).join(' ')}...`
-    return {...post, content: shortContent}
-  })
-  req.render('home', { content: homeStartingContent, posts: updatedPosts, _:_ });
+  const getPosts = async () => {
+    const posts = await Post.find();
+    const updatedPosts = posts.map(post => {
+      const arrayContent = post.content.split(' ')
+      const shortContent = `${arrayContent.slice(0, 8).join(' ')}...`
+      return { title: post.title, content: shortContent }
+    })
+    req.render('home', { content: homeStartingContent, posts: updatedPosts, _: _ });
+  }
+  getPosts()
+
 })
 app.get('/about', (res, req) => {
   req.render('about', { content: aboutContent })
@@ -33,19 +51,23 @@ app.get('/compose', (res, req) => {
 
 app.get('/posts/:postId', (req, res) => {
   const params = req.params.postId
-  const [findPost] = posts.filter(post => {
-    const title = _.kebabCase(post.title);
-    const titleParams = _.kebabCase(params);
-    if (title === titleParams) {
-      return true
+  const findPost = async () => {
+    const posts = await Post.find();
+    const [findPost] = posts.filter(post => {
+      const title = _.kebabCase(post.title);
+      const titleParams = _.kebabCase(params);
+      if (title === titleParams) {
+        return true
+      }
+    })
+    if (findPost) {
+      res.render('post', { title: findPost.title, content: findPost.content })
+    } else {
+      res.render('post', { title: 'Error', content: 'Nothing Has found' })
     }
-  })
-
-  if (findPost) {
-    res.render('post', { title: findPost.title, content: findPost.content })
-  } else {
-    res.render('post', { title: 'Error', content: 'Nothing Has found' })
   }
+  findPost()
+
 })
 
 app.post('/compose', (req, res) => {
@@ -53,25 +75,20 @@ app.post('/compose', (req, res) => {
     title: req.body.title,
     content: req.body.post
   }
-  posts.push(post)
+  const publishPost = async () => {
+    try {
+      await Post.create(post)
+      console.log(`Added new post successfully #${post.title}`);
+    } catch (err) {
+      console.error(`Could not Publish a new post.. ${err}`);
+    }
+  }
+  publishPost()
   res.redirect('/')
 })
 
 
 app.use(express.static("public"));
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.listen(3000, function () {
   console.log("Server started on port 3000");
