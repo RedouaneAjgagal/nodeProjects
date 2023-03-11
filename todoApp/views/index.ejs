@@ -1,6 +1,6 @@
 <%- include('header') -%>
 
-
+    <h1><%= content %></h1>
     <ul>
         <% for (let i = 0; i < todos.length; i++) { %>
             <% let style = todos[i].completed ? "text-decoration:line-through" : "text-decoration:none" %>
@@ -9,16 +9,19 @@
                 <label for=<%= todos[i].id%>>
                     <form action="/complete" method="post">
                         <input onchange="this.form.submit()"  type="checkbox" name='checkbox' value=<%= todos[i].id%>  id=<%= todos[i].id%> >
+                        <input type="hidden" name="params" value=<%= content %>>
                     </form>
                     <span style=<%= style %>>
                         <%= todos[i].value %>
                     </span>
                     <form action="/delete" method="post">
                         <button type="submit" name="delete" value=<%= todos[i].id%>>delete</button>
+                        <input type="hidden" name="list" value=<%= content %>>
                     </form>
                     <form action="/edit" method="post">
                         <input type="text" name="<%= todos[i].id%>">
                         <button type="submit" name="update" value=<%= todos[i].id%>>update</button>
+                        <input type="hidden" name="edit" value=<%= content %>>
                     </form>
                 </label>
             </li>
@@ -27,7 +30,21 @@
     <form action="/" method="post">
         <label for="todo">Add a new todo</label>
         <input type="text" id="todo" name="todo">
-        <button type="submit">Add</button>
+        <button type="submit" name="addTodoBtn" value=<%= content %>>Add</button>
+    </form>
+
+    <ul style="margin-top: 8rem">
+        <% list.forEach(item => { %>
+            <li>
+                <%= item %>
+                <a href="/<%= item %>">Go</a>
+            </li>
+        <% }) %>
+    </ul>
+    <form action="/category" method="post" style="margin-bottom: 8rem;">
+        <label for="category">Add a custom category</label>
+        <input type="text" id="category" name="category">
+        <button type="submit" name="addTodoBtn" value=<%= content %>>Add</button>
     </form>
 
 
