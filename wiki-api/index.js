@@ -30,10 +30,22 @@ app.post('/articles', (req, res) => {
             await Article.create({title, content})
             res.send(`Successfully Added #${title}`)
         } catch (err) {
-            res.send(`Fail to add a new article.. ${err}`)
+            res.send(`Failed to add a new article.. ${err}`)
         }
     }
     newArticle();
+});
+
+app.delete('/articles', (req, res) => {
+    const deleteAllArticles = async () => {
+        try {
+            await Article.deleteMany();
+            res.send('Successfully deleted all articles')
+        } catch (err) {
+            res.send('Failed to delete all articles')
+        }
+    }
+    deleteAllArticles();
 })
 
 app.listen(3000, () => {
