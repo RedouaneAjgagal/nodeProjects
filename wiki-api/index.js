@@ -14,40 +14,41 @@ const articlesSchema = new mongoose.Schema({
 });
 const Article = mongoose.model('Article', articlesSchema);
 
-app.get('/articles', (req, res) => {
-    const getArticles = async () => {
-        const articles = await Article.find();
-        res.send(articles)
-    }
-    getArticles()
-});
+app.route('/articles')
 
-app.post('/articles', (req, res) => {
-    const title = req.body.title;
-    const content = req.body.content;
-    const newArticle = async () => {
-        try {
-            await Article.create({title, content})
-            res.send(`Successfully Added #${title}`)
-        } catch (err) {
-            res.send(`Failed to add a new article.. ${err}`)
+    .get((req, res) => {
+        const getArticles = async () => {
+            const articles = await Article.find();
+            res.send(articles)
         }
-    }
-    newArticle();
-});
+        getArticles()
+    })
 
-app.delete('/articles', (req, res) => {
-    const deleteAllArticles = async () => {
-        try {
-            await Article.deleteMany();
-            res.send('Successfully deleted all articles')
-        } catch (err) {
-            res.send('Failed to delete all articles')
+    .post((req, res) => {
+        const title = req.body.title;
+        const content = req.body.content;
+        const newArticle = async () => {
+            try {
+                await Article.create({ title, content })
+                res.send(`Successfully Added #${title}`)
+            } catch (err) {
+                res.send(`Failed to add a new article.. ${err}`)
+            }
         }
-    }
-    deleteAllArticles();
-})
+        newArticle();
+    })
 
+    .delete((req, res) => {
+        const deleteAllArticles = async () => {
+            try {
+                await Article.deleteMany();
+                res.send('Successfully deleted all articles')
+            } catch (err) {
+                res.send('Failed to delete all articles')
+            }
+        }
+        deleteAllArticles();
+    });
 app.listen(3000, () => {
     console.log(`Server is running on port: 3000`);
 })
