@@ -76,7 +76,7 @@ app.route('/articles/:post')
         const params = req.params.post;
         const updateArticle = async () => {
             try {
-                const updatedArticle =  await Article.replaceOne({ title: params }, req.body);
+                const updatedArticle = await Article.replaceOne({ title: params }, req.body);
                 if (!updatedArticle.modifiedCount) {
                     res.send(`Could not find ${params} article to update`)
                 } else {
@@ -93,7 +93,7 @@ app.route('/articles/:post')
         const params = req.params.post;
         const updateArticle = async () => {
             try {
-                const updatedArticle = await Article.updateOne({title: params}, req.body)
+                const updatedArticle = await Article.updateOne({ title: params }, req.body)
                 if (!updatedArticle.modifiedCount) {
                     res.send(`Could not find ${params} article to update`)
                 } else {
@@ -105,6 +105,24 @@ app.route('/articles/:post')
         }
         updateArticle()
     })
+
+    .delete((req, res) => {
+        const params = req.params.post;
+        console.log(params);
+        const deleteArticle = async () => {
+            try {
+                const deletedArticle = await Article.deleteOne({ title: params })
+                if (!deletedArticle.deletedCount) {
+                    res.send(`Could not find ${params} article to delete`)
+                } else {
+                    res.send(`${params} article has been deleted succeffully`)
+                }
+            } catch (err) {
+                res.send(`Something went wrong ${err}`)
+            }
+        }
+        deleteArticle();
+    });
 
 
 app.listen(3000, () => {
