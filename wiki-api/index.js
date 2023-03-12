@@ -74,11 +74,9 @@ app.route('/articles/:post')
     })
     .put((req, res) => {
         const params = req.params.post;
-        const title = req.body.title;
-        const content = req.body.content;
         const updateArticle = async () => {
             try {
-                const updatedArticle =  await Article.replaceOne({ title: params }, { title, content });
+                const updatedArticle =  await Article.replaceOne({ title: params }, req.body);
                 if (!updatedArticle.modifiedCount) {
                     res.send(`Could not find ${params} article to update`)
                 } else {
@@ -89,7 +87,24 @@ app.route('/articles/:post')
             }
         }
         updateArticle()
-    });
+    })
+
+    .patch((req, res) => {
+        const params = req.params.post;
+        const updateArticle = async () => {
+            try {
+                const updatedArticle = await Article.updateOne({title: params}, req.body)
+                if (!updatedArticle.modifiedCount) {
+                    res.send(`Could not find ${params} article to update`)
+                } else {
+                    res.send(`${params} article has been updated succeffully`)
+                }
+            } catch (err) {
+                res.send(err)
+            }
+        }
+        updateArticle()
+    })
 
 
 app.listen(3000, () => {
