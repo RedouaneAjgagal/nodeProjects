@@ -1,9 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const encrypt = require('mongoose-encryption');
+// const encrypt = require('mongoose-encryption');
 const app = express();
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
@@ -15,7 +16,7 @@ const userSchema = new mongoose.Schema({
     password: String
 });
 
-userSchema.plugin(encrypt, { secret: process.env.SECRET_KEY, encryptedFields: ['password'] })
+// userSchema.plugin(encrypt, { secret: process.env.SECRET_KEY, encryptedFields: ['password'] })
 
 const User = mongoose.model('User', userSchema);
 
@@ -33,15 +34,17 @@ app.route('/login')
         const loginHandler = async () => {
             try {
                 const user = await User.findOne({ userName })
-                if (!user) {
-                    res.redirect('/login');
-                }
-                if (user.password === password) {
-                    console.log(`${userName} has successfully logged in`);
-                    res.render('secrets');
-                } else {
-                    res.redirect('/login');
-                }
+                bcrypt.compare(password, user.password, async function (err, result) {
+                    if (!user) {
+                        res.redirect('/login');
+                    }
+                    if (result) {
+                        console.log(`${userName} has successfully logged in`);
+                        res.render('secrets');
+                    } else {
+                        res.redirect('/login');
+                    }
+                });
             } catch (err) {
                 console.error(`Could not login.. ${err}`)
             }
@@ -57,17 +60,19 @@ app.route('/register')
     .post((req, res) => {
         const userName = req.body.username;
         const password = req.body.password;
-        const addUser = async () => {
-            try {
-                await User.create({ userName, password });
-                console.log(`${userName} has been successfully registered`);
-                res.render('secrets')
-            } catch (err) {
-                console.error(`Could not add new user.. ${err}`);
-            }
-        }
-        addUser();
-    });
+        bcrypt.genSalt(saltRounds, function (err, salt) {
+            bcrypt.hash(password, salt, async function (err, hash) {
+                try {
+                    await User.create({ userName, password: hash });
+                    console.log(`${userName} has been successfully registered`);
+                    res.render('secrets')
+                } catch (err) {
+                    console.error(`Could not add new user.. ${err}`);
+                }
+            });
+        });
+    }
+    );
 
 
 app.listen(3000, () => {
