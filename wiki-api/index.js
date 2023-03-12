@@ -14,6 +14,8 @@ const articlesSchema = new mongoose.Schema({
 });
 const Article = mongoose.model('Article', articlesSchema);
 
+// /////////////// requests targeting all articles //////////////////////// //
+
 app.route('/articles')
 
     .get((req, res) => {
@@ -49,6 +51,47 @@ app.route('/articles')
         }
         deleteAllArticles();
     });
+
+// /////////////// requests targeting a specific article //////////////////////// //
+
+app.route('/articles/:post')
+
+    .get((req, res) => {
+        const params = req.params.post;
+        const getArticle = async () => {
+            try {
+                const article = await Article.findOne({ title: params })
+                if (article) {
+                    res.send(article);
+                } else {
+                    res.send(`Could not find ${params}`)
+                }
+            } catch (err) {
+                res.send(err)
+            }
+        }
+        getArticle();
+    })
+    .put((req, res) => {
+        const params = req.params.post;
+        const title = req.body.title;
+        const content = req.body.content;
+        const updateArticle = async () => {
+            try {
+                const updatedArticle =  await Article.replaceOne({ title: params }, { title, content });
+                if (!updatedArticle.modifiedCount) {
+                    res.send(`Could not find ${params} article to update`)
+                } else {
+                    res.send(`${params} article has been updated succeffully`)
+                }
+            } catch (err) {
+                res.send(err)
+            }
+        }
+        updateArticle()
+    });
+
+
 app.listen(3000, () => {
     console.log(`Server is running on port: 3000`);
 })
