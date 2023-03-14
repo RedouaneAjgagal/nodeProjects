@@ -41,11 +41,21 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.get('/', (req, res) => {
-    res.render('home');
+    const isAuthenticated = req.isAuthenticated();
+    if (isAuthenticated) {
+        res.redirect('/secrets')
+    } else {
+        res.render('home');
+    }
 })
 app.route('/login')
     .get((req, res) => {
-        res.render('login');
+        const isAuthenticated = req.isAuthenticated();
+        if (isAuthenticated) {
+            res.redirect('/')
+        } else {
+            res.render('login');
+        }
     })
     .post((req, res) => {
         const user = new User({
@@ -62,7 +72,12 @@ app.route('/login')
 
 app.route('/register')
     .get((req, res) => {
-        res.render('register');
+        const isAuthenticated = req.isAuthenticated();
+        if (isAuthenticated) {
+            res.redirect('/')
+        } else {
+            res.render('register');
+        }
     })
     .post(async (req, res) => {
         const username = req.body.username;
