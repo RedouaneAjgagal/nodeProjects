@@ -6,6 +6,8 @@ require('dotenv').config();
 
 // Midleware
 app.use(express.json());
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use('/api/v1/tasks', tasks)
