@@ -1,5 +1,6 @@
-const getProducts = (req, res) => {
-    return res.status(200).send('All products');
+const getProducts = async (req, res) => {
+    throw new Error('testing async errors handler package!');
+    return res.status(200).json({ msg: 'All products' });
 }
 
 
