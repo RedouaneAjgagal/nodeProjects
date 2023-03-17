@@ -2,7 +2,7 @@ const Product = require('../models/product');
 
 // Read all products
 const getProducts = async (req, res) => {
-    const { name, featured, company, sort } = req.query
+    const { name, featured, company, sort, field } = req.query
     const queryObj = {}
     if (name) {
         queryObj.name = { $regex: name, $options: 'i' }
@@ -15,7 +15,8 @@ const getProducts = async (req, res) => {
     }
     // console.log(sort.split(',').join(' '));
     const sortList = sort ? sort.split(',').join(' ') : 'createdAt';
-    const products = await Product.find(queryObj).setOptions({ strictQuery: true }).sort(sortList);
+    const fieldList = field ? field.split(',').join(' ') : null
+    const products = await Product.find(queryObj).setOptions({ strictQuery: true }).sort(sortList).select(fieldList);
 
     return res.status(200).json(products);
 }
