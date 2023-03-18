@@ -1,4 +1,5 @@
-const CustomAPIError = require('../errors/custom-error')
+// const CustomAPIError = require('../errors/custom-error')
+const { BadRequestError } = require('../errors')
 const jwt = require('jsonwebtoken');
 
 
@@ -6,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const login = async (req, res) => {
     const { username, password } = req.body
     if (username.trim().length < 1 || password.trim().length < 1) {
-        throw new CustomAPIError('Username or Password cannot be empty.', 400)
+        throw new BadRequestError('Username or Password cannot be empty.')
     }
     // demo ID
     const id = Math.random();
