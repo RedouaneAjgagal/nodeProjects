@@ -14,8 +14,19 @@ const login = async (req, res) => {
 }
 
 const dashboard = async (req, res) => {
-    const authenticatedData = Math.floor((Math.random() * 100) + 1);
-    res.status(200).json({ msg: `Hello, Max`, secret: `Your private key is ${authenticatedData}` });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
+        throw new CustomAPIError('No token has been provided.', 401);
+    }
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+        console.log(decoded);
+        const authenticatedData = Math.floor((Math.random() * 100) + 1);
+        res.status(200).json({ msg: `Hello, ${decoded.username}`, secret: `Your private key is ${authenticatedData}` });
+    } catch (error) {
+        throw new CustomAPIError('Unauthorized action. Please login first', 401);
+    }
 }
 
 
