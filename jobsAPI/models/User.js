@@ -31,5 +31,10 @@ userSchema.methods.createToken = function () {
     return jwt.sign({ userID: this._id, username: this.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME })
 }
 
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    return isMatch;
+}
+
 const User = mongoose.model('User', userSchema);
 module.exports = User
