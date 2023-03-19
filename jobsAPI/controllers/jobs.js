@@ -1,16 +1,28 @@
+const Job = require('../models/Job');
+const { NotFoundError } = require('../errors')
+const { StatusCodes } = require('http-status-codes')
 
 // route('jobs')
 const getAllJobs = async (req, res) => {
-    res.send('Get all jobs')
+    const jobs = await Job.find({ createdBy: req.user.id }, 'company position status');
+    res.status(StatusCodes.OK).json(jobs)
 }
 const createJob = async (req, res) => {
-    res.status(200).json(req.user);
+    req.body.createdBy = req.user.id;
+    const newPost = await Job.create(req.body);
+    res.status(StatusCodes.CREATED).json(newPost);
 }
 
 
 // route('jobs/id')
 const getJob = async (req, res) => {
-    res.send('Get job details')
+    const jobId = req.params.id;
+    const userId = req.user.id;
+    const job = await Job.findOne({ _id: jobId, createdBy: userId });
+    if (!job) {
+        throw new NotFoundError(`Found no job with ID ${jobId}`);
+    }
+    res.status(StatusCodes.OK).json(job);
 }
 const updateJob = async (req, res) => {
     res.send('Update job')
