@@ -7,6 +7,7 @@ const getAllJobs = async (req, res) => {
     const jobs = await Job.find({ createdBy: req.user.id }, 'company position status');
     res.status(StatusCodes.OK).json(jobs)
 }
+
 const createJob = async (req, res) => {
     req.body.createdBy = req.user.id;
     const newPost = await Job.create(req.body);
@@ -24,6 +25,7 @@ const getJob = async (req, res) => {
     }
     res.status(StatusCodes.OK).json(job);
 }
+
 const updateJob = async (req, res) => {
     const {
         user: { id: userId },
@@ -40,6 +42,7 @@ const updateJob = async (req, res) => {
     }
     res.status(StatusCodes.OK).json(job);
 }
+
 const deleteJob = async (req, res) => {
     const {
         user: { id: userId },
