@@ -16,6 +16,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 // product routes
 const productRoutes = require('./routes/productRoutes')
 
+app.use(express.static('./public'));
 app.use(express.json());
 app.use(fileUpload());
 
