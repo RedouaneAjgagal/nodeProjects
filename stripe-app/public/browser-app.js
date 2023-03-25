@@ -13,7 +13,7 @@ var stripe = Stripe(
 
 // Disable the button until we have Stripe set up on the page
 document.querySelector('button').disabled = true;
-fetch('/stripe', {
+fetch('/create-payment-intent', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
